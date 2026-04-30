@@ -10,8 +10,8 @@
      CONFIG
      ============================================================ */
   var FRAME_DIR    = 'svg_animation/';
-  var FRAME_PREFIX = 'dec091cd-375e-46fb-8b10-3722609a9e5c__1__';
-  var TOTAL_FRAMES = 61;
+  var FRAME_PREFIX = 'frame_';
+  var TOTAL_FRAMES = 121;
   var FRAME_END_PROGRESS = 0.88;
   var SERVICES_REVIEW_START = 0.88;
 
@@ -61,7 +61,7 @@
      IMAGE LOADING
      ============================================================ */
   function padNum(n) {
-    return ('00' + n).slice(-3);
+    return ('00000' + n).slice(-6);
   }
 
   function loadFrames() {
@@ -78,7 +78,7 @@
           }
         };
         img.onerror = function () { loadedCount++; };
-        img.src = FRAME_DIR + FRAME_PREFIX + padNum(idx + 1) + '.png';
+        img.src = FRAME_DIR + FRAME_PREFIX + padNum(idx) + '.png';
       }(i));
     }
   }
