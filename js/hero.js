@@ -9,9 +9,10 @@
   /* ============================================================
      CONFIG
      ============================================================ */
-  var FRAME_DIR    = 'svg_animation/';
-  var FRAME_PREFIX = 'dec091cd-375e-46fb-8b10-3722609a9e5c__1__';
-  var TOTAL_FRAMES = 61;
+  var FRAME_DIR       = 'svg_animation/';
+  var FRAME_PREFIX    = 'ezgif-frame-';
+  var FRAME_EXTENSION = '.jpg';
+  var TOTAL_FRAMES    = 240;
   var FRAME_END_PROGRESS = 0.88;
   var SERVICES_REVIEW_START = 0.88;
 
@@ -78,7 +79,7 @@
           }
         };
         img.onerror = function () { loadedCount++; };
-        img.src = FRAME_DIR + FRAME_PREFIX + padNum(idx + 1) + '.png';
+        img.src = FRAME_DIR + FRAME_PREFIX + padNum(idx + 1) + FRAME_EXTENSION;
       }(i));
     }
   }
