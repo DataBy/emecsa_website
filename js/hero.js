@@ -45,7 +45,6 @@
   var loadedCount  = 0;
   var currentFrame = -1;
   var heroIntroComplete = false;
-  var sequenceTrigger = null;
 
   /* Per-card visibility — tracks whether Anime.js last animated it in */
   var cardVisible  = [false, false, false, false];
@@ -124,31 +123,21 @@
      SCROLL PROGRESS  (0 → 1 through the wrapper)
      ============================================================ */
   function getProgress() {
-    if (sequenceTrigger) {
-      return sequenceTrigger.progress;
-    }
-
     var rect  = wrapper.getBoundingClientRect();
     var total = rect.height - window.innerHeight;
     if (total <= 0) return 0;
     return Math.max(0, Math.min(1, -rect.top / total));
   }
 
-  function initScrollPin() {
-    if (!window.ScrollTrigger || !hero) return;
+  function updatePinState() {
+    if (!wrapper || !hero) return;
 
-    sequenceTrigger = ScrollTrigger.create({
-      trigger: wrapper,
-      start: 'top top',
-      end: function () {
-        return '+=' + Math.max(1, wrapper.offsetHeight - window.innerHeight);
-      },
-      pin: hero,
-      pinSpacing: false,
-      scrub: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true
-    });
+    var rect = wrapper.getBoundingClientRect();
+    var withinRunway = rect.top <= 0 && rect.bottom > window.innerHeight;
+    var completed = rect.bottom <= window.innerHeight;
+
+    hero.classList.toggle('hero-fixed', withinRunway);
+    hero.classList.toggle('hero-complete', completed);
   }
 
   function clamp01(v) {
@@ -334,6 +323,8 @@
      MAIN rAF TICK
      ============================================================ */
   function tick() {
+    updatePinState();
+
     var p  = getProgress();
     var frameProgress = clamp01(p / FRAME_END_PROGRESS);
     var fi = Math.min(TOTAL_FRAMES - 1, Math.floor(frameProgress * TOTAL_FRAMES));
@@ -380,7 +371,6 @@
 
     resizeCanvas();
     loadFrames();
-    initScrollPin();
 
     window.addEventListener('resize', onResize);
     window.addEventListener('hero:servicesReviewRequested', function () {
@@ -388,16 +378,12 @@
     });
     window.addEventListener('hero:resetRequested', resetHeroState);
     window.addEventListener('hero:scrollReady', function () {
-      if (window.ScrollTrigger) {
-        ScrollTrigger.refresh();
-      }
+      onResize();
     });
 
     window.addEventListener('hero:entranceComplete', function () {
       heroIntroComplete = true;
-      if (window.ScrollTrigger) {
-        ScrollTrigger.refresh();
-      }
+      onResize();
     });
 
     requestAnimationFrame(tick);

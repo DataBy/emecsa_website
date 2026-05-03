@@ -1,392 +1,654 @@
 /* ============================================================
    EMECSA — Main Animation Script
-   Uses GSAP + ScrollTrigger (loaded from CDN)
+   Focus: Anime.js + native browser APIs
    ============================================================ */
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+(function () {
+  'use strict';
 
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-const qs  = (s, ctx = document) => ctx.querySelector(s);
-const qsa = (s, ctx = document) => [...ctx.querySelectorAll(s)];
+  const qs = (selector, ctx = document) => ctx.querySelector(selector);
+  const qsa = (selector, ctx = document) => Array.from(ctx.querySelectorAll(selector));
+  const isTouch = () => window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 820;
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const isMobile = () => window.innerWidth <= 768;
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
 
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-
-/* initHeroCanvas removed — hero.js handles the sequence canvas */
-
-/* ============================================================
-   CUSTOM CURSOR
-   ============================================================ */
-function initCursor() {
-  if (isMobile()) return;
-
-  const dot      = qs('#cursor');
-  const follower = qs('#cursorFollower');
-  let mx = 0, my = 0, fx = 0, fy = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    gsap.to(dot, { x: mx, y: my, duration: 0.08, overwrite: true });
-  });
-
-  (function track() {
-    fx += (mx - fx) * 0.11;
-    fy += (my - fy) * 0.11;
-    gsap.set(follower, { x: fx, y: fy });
-    requestAnimationFrame(track);
-  })();
-
-  const hover   = qsa('a, button, .service-card, .project-card');
-  hover.forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      gsap.to(dot,      { scale: 2.8, duration: 0.3 });
-      gsap.to(follower, { scale: 1.6, opacity: 0.28, duration: 0.3 });
-    });
-    el.addEventListener('mouseleave', () => {
-      gsap.to(dot,      { scale: 1, duration: 0.3 });
-      gsap.to(follower, { scale: 1, opacity: 1,    duration: 0.3 });
-    });
-  });
-}
-
-/* ============================================================
-   SCROLL PROGRESS BAR
-   ============================================================ */
-function initScrollProgress() {
-  gsap.to('.scroll-progress', {
-    scaleX: 1,
-    ease: 'none',
-    scrollTrigger: {
-      scrub: true,
-      start: 'top top',
-      end:   'bottom bottom'
+  const SERVICE_CAROUSEL = [
+    {
+      number: '01',
+      title: 'Consultoría y diseño electromecánico',
+      text: 'Planos eléctricos, sistemas especiales, sistemas mecánicos, supresión de incendios y verificaciones eléctricas para trámites ante Ministerio de Salud.',
+      bullets: ['Residencial, comercial, institucional e industrial.', 'Documentación para tramitología y códigos OC.', 'Equipo de diseño interno.'],
+      meta: 'Diseño y documentación'
+    },
+    {
+      number: '02',
+      title: 'Construcción electromecánica',
+      text: 'Acometidas, canalizaciones, tableros, ramales, luminarias, refrigeración, pararrayos, telecomunicaciones, aguas negras, pluviales, agua potable y bombas.',
+      bullets: ['Obra eléctrica y mecánica completa.', 'Media y baja tensión.', 'Puesta en servicio por etapas.'],
+      meta: 'Ejecución en campo'
+    },
+    {
+      number: '03',
+      title: 'Sistemas especiales',
+      text: 'CCTV, telecomunicaciones, sonido, detección de incendios, supresión de incendios, iluminación y tomacorrientes para edificaciones de alto tránsito.',
+      bullets: ['Retail, oficinas, centros educativos y edificios públicos.', 'Coordinación con arquitectura y operación.', 'Integración ordenada de canalizaciones.'],
+      meta: 'Integración técnica'
+    },
+    {
+      number: '04',
+      title: 'Remodelaciones electromecánicas',
+      text: 'Intervenciones en baja tensión, refrigeración, aguas grises, detección, potable, aguas negras, supresión, telecomunicaciones y cajas de pago.',
+      bullets: ['Supermercados, restaurantes, centros comerciales y plantas.', 'Trabajos por fases con operación activa.', 'Reemplazo total o parcial de sistemas críticos.'],
+      meta: 'Operación activa'
+    },
+    {
+      number: '05',
+      title: 'Automatización y sistemas de control',
+      text: 'Soluciones de automatización y control para procesos residenciales, comerciales e industriales, alineadas con la rama electromecánica que originó la empresa.',
+      bullets: ['Potencia y control para refrigeración.', 'Control de procesos y tableros.', 'Integración con sistemas eléctricos existentes.'],
+      meta: 'Control y potencia'
     }
-  });
-}
+  ];
 
-/* ============================================================
-   HEADER — sticky state
-   ============================================================ */
-function initHeader() {
-  const header = qs('header');
-  ScrollTrigger.create({
-    start: 'top -60',
-    onUpdate: self => header.classList.toggle('scrolled', self.scroll() > 60)
-  });
-}
+  function runAnime(config) {
+    if (reduceMotion() || !window.anime) {
+      const targets = qsaFromTargets(config.targets);
+      targets.forEach((target) => {
+        if (!target || !target.style) return;
+        if (config.opacity !== undefined) target.style.opacity = Array.isArray(config.opacity) ? config.opacity.at(-1) : config.opacity;
+        if (
+          config.translateY !== undefined ||
+          config.translateX !== undefined ||
+          config.scale !== undefined ||
+          config.scaleX !== undefined ||
+          config.rotate !== undefined
+        ) {
+          target.style.transform = 'none';
+        }
+      });
+      if (typeof config.complete === 'function') config.complete();
+      return null;
+    }
+    return anime(config);
+  }
 
-/* ============================================================
-   PRELOADER → HERO ENTRANCE
-   ============================================================ */
-function initPreloader() {
-  const tl = gsap.timeline();
+  function qsaFromTargets(targets) {
+    if (!targets) return [];
+    if (typeof targets === 'string') return qsa(targets);
+    if (targets instanceof Element || targets === window) return [targets];
+    if (Array.isArray(targets)) return targets;
+    return [];
+  }
 
-  tl.to('#preloaderFill', {
-    width: '100%',
-    duration: 1.1,
-    ease: 'power2.inOut'
-  })
-  .to('#preloader', {
-    yPercent: -100,
-    duration: 0.75,
-    ease: 'power3.inOut',
-    onComplete() {
-      qs('#preloader').style.display = 'none';
+  function initScrollProgress() {
+    const bar = qs('.scroll-progress');
+    if (!bar) return;
+
+    let ticking = false;
+    const update = () => {
+      const doc = document.documentElement;
+      const max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, window.scrollY / max));
+      bar.style.transform = `scaleX(${progress})`;
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    update();
+  }
+
+  function initHeader() {
+    const header = qs('#header');
+    if (!header || document.body.classList.contains('inner-page')) return;
+
+    const update = () => header.classList.toggle('scrolled', window.scrollY > 60);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  function initPreloader() {
+    const preloader = qs('#preloader');
+    if (!preloader) {
       document.body.classList.remove('is-loading');
-      ScrollTrigger.refresh();
       window.dispatchEvent(new Event('hero:scrollReady'));
       heroEntrance();
+      return;
     }
-  });
-}
 
-function heroEntrance() {
-  /* Staggered entrance of hero UI elements after preloader exits.
-     hero.js takes over scroll-based opacity/transform after onComplete fires. */
-  const tl = gsap.timeline({
-    defaults: { ease: 'expo.out' },
-    onComplete() {
+    const fill = qs('#preloaderFill');
+    if (!window.anime || reduceMotion()) {
+      preloader.style.display = 'none';
+      document.body.classList.remove('is-loading');
+      window.dispatchEvent(new Event('hero:scrollReady'));
+      heroEntrance();
+      return;
+    }
+
+    anime.timeline({ easing: 'easeInOutCubic' })
+      .add({
+        targets: fill,
+        width: '100%',
+        duration: 900
+      })
+      .add({
+        targets: preloader,
+        translateY: '-100%',
+        duration: 680,
+        complete() {
+          preloader.style.display = 'none';
+          document.body.classList.remove('is-loading');
+          window.dispatchEvent(new Event('hero:scrollReady'));
+          heroEntrance();
+        }
+      });
+  }
+
+  function heroEntrance() {
+    if (!qs('#heroContent')) {
+      revealAboveFold();
+      return;
+    }
+
+    if (!window.anime || reduceMotion()) {
+      qsa('#heroLogo, #heroEyebrow, #heroHeadline, #heroSub, #heroCtaRow, #heroScrollCue').forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
       window.dispatchEvent(new Event('hero:entranceComplete'));
+      revealAboveFold();
+      return;
     }
-  });
 
-  tl.to('#heroLogo',     { opacity: 1, scale: 1, duration: 1.2 })
-    .to('#heroEyebrow',  { opacity: 1, y: 0, duration: 0.7 }, '-=0.65')
-    .to('#heroHeadline', { opacity: 1, y: 0, duration: 0.9 }, '-=0.55')
-    .to('#heroSub',      { opacity: 1, y: 0, duration: 0.7 }, '-=0.6')
-    .to('#heroCtaRow',   { opacity: 1, y: 0, duration: 0.6 }, '-=0.55')
-    .to('#heroScrollCue',{ opacity: 1, duration: 0.5 },        '-=0.3')
-    .to('.header-logo',  { opacity: 1, duration: 0.4 },        '-=0.8');
-  /* Scroll-based parallax on hero elements removed — hero.js handles
-     content fade-out via direct style on #heroContent */
-}
+    anime.timeline({
+      easing: 'easeOutExpo',
+      complete() {
+        window.dispatchEvent(new Event('hero:entranceComplete'));
+        revealAboveFold();
+      }
+    })
+      .add({ targets: '#heroLogo', opacity: [0, 1], scale: [0.75, 1], duration: 950 })
+      .add({ targets: '#heroEyebrow', opacity: [0, 1], translateY: [16, 0], duration: 650 }, '-=520')
+      .add({ targets: '#heroHeadline', opacity: [0, 1], translateY: [28, 0], duration: 780 }, '-=520')
+      .add({ targets: '#heroSub', opacity: [0, 1], translateY: [18, 0], duration: 650 }, '-=520')
+      .add({ targets: '#heroCtaRow', opacity: [0, 1], translateY: [16, 0], duration: 600 }, '-=480')
+      .add({ targets: '#heroScrollCue', opacity: [0, 1], duration: 420 }, '-=280');
+  }
 
-/* initServices removed — services now live inside the hero sequence (hero.js) */
-
-/* ============================================================
-   STRENGTH — counters + bar
-   ============================================================ */
-function initStrength() {
-  ScrollTrigger.create({
-    trigger: '#strength',
-    start: 'top 72%',
-    onEnter() {
-      gsap.to('#strengthLabel', { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out' });
-      gsap.to('#strengthTitle', { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: 'power3.out' });
-    }
-  });
-
-  qsa('.stat-item').forEach((item, i) => {
-    const counter = qs('.stat-count', item);
-    const bar     = qs('.stat-bar-fill', item);
-    const target  = parseInt(counter.dataset.target);
-
-    ScrollTrigger.create({
-      trigger: item,
-      start: 'top 82%',
-      onEnter() {
-        const delay = i * 0.14;
-
-        gsap.to(item, { opacity: 1, y: 0, duration: 0.75, delay, ease: 'power3.out' });
-
-        gsap.to({ v: 0 }, {
-          v: target, duration: 2.2, delay: delay + 0.2,
-          ease: 'power2.out',
-          onUpdate() { counter.textContent = Math.round(this.targets()[0].v); }
-        });
-
-        gsap.to(bar, { scaleX: 1, duration: 1.6, delay: delay + 0.4, ease: 'power3.out' });
+  function revealAboveFold() {
+    qsa('[data-reveal]').forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92) {
+        revealElement(el);
       }
     });
-  });
-}
+  }
 
-/* ============================================================
-   PROJECTS — reveal masks + parallax zoom
-   ============================================================ */
-function initProjects() {
-  ScrollTrigger.create({
-    trigger: '#projects',
-    start: 'top 72%',
-    onEnter() {
-      gsap.to('#projectsLabel', { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out' });
-      gsap.to('#projectsTitle', { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: 'power3.out' });
-    }
-  });
-
-  qsa('.project-card').forEach((card, i) => {
-    const mask  = qs('.project-reveal', card);
-    const inner = qs('.project-placeholder', card);
-
-    /* Slide mask out to reveal image */
-    ScrollTrigger.create({
-      trigger: card,
-      start: 'top 82%',
-      onEnter() {
-        gsap.to(mask, {
-          scaleX: 0, duration: 1.05,
-          delay: i * 0.14,
-          ease: 'power4.inOut'
-        });
-      }
+  function revealElement(el) {
+    if (!el || el.dataset.revealed === 'true') return;
+    el.dataset.revealed = 'true';
+    runAnime({
+      targets: el,
+      opacity: [0, 1],
+      translateY: [28, 0],
+      duration: 760,
+      easing: 'easeOutExpo'
     });
 
-    /* Parallax zoom — inner image scales from 1.12→1 as card passes viewport */
-    if (inner) {
-      gsap.to(inner, {
-        scale: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: card,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.8
+    if (el.classList.contains('metric-strip')) {
+      runAnime({
+        targets: qsa('.metric-item', el),
+        opacity: [0, 1],
+        translateY: [18, 0],
+        scale: [0.96, 1],
+        delay: window.anime && window.anime.stagger ? window.anime.stagger(90) : 0,
+        duration: 620,
+        easing: 'easeOutExpo'
+      });
+    }
+
+    if (el.hasAttribute('data-company-stats')) {
+      runAnime({
+        targets: qsa('.company-stat', el),
+        opacity: [0, 1],
+        translateY: [34, 0],
+        delay: window.anime && window.anime.stagger ? window.anime.stagger(120) : 0,
+        duration: 760,
+        easing: 'easeOutExpo'
+      });
+
+      runAnime({
+        targets: qsa('.company-stat-bar span', el),
+        scaleX: [0, 1],
+        delay: window.anime && window.anime.stagger ? window.anime.stagger(120, { start: 260 }) : 260,
+        duration: 1100,
+        easing: 'easeInOutCubic'
+      });
+    }
+
+    if (el.classList.contains('values-grid')) {
+      runAnime({
+        targets: qsa('span', el),
+        opacity: [0, 1],
+        translateY: [18, 0],
+        rotate: [-1.5, 0],
+        delay: window.anime && window.anime.stagger ? window.anime.stagger(80) : 0,
+        duration: 620,
+        easing: 'easeOutExpo'
+      });
+    }
+  }
+
+  function initReveals() {
+    const items = qsa('[data-reveal]');
+    if (!items.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        revealElement(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, {
+      threshold: 0.18,
+      rootMargin: '0px 0px -8% 0px'
+    });
+
+    items.forEach((item) => observer.observe(item));
+  }
+
+  function initCounters() {
+    qsa('[data-counter]').forEach((counter) => {
+      const target = parseFloat(counter.dataset.counter || '0');
+      let played = false;
+
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting) || played) return;
+        played = true;
+        observer.disconnect();
+
+        if (!window.anime || reduceMotion()) {
+          counter.textContent = Math.round(target);
+          return;
+        }
+
+        anime({
+          targets: { value: 0 },
+          value: target,
+          duration: 1700,
+          easing: 'easeOutCubic',
+          update(anim) {
+            counter.textContent = Math.round(anim.animatables[0].target.value);
+          }
+        });
+      }, { threshold: 0.35 });
+
+      observer.observe(counter);
+    });
+  }
+
+  function initCompanyMarquee() {
+    const marquee = qs('.company-marquee');
+    if (!marquee || !window.anime || reduceMotion()) return;
+
+    anime({
+      targets: marquee,
+      translateX: ['0%', '-50%'],
+      duration: 24000,
+      easing: 'linear',
+      loop: true
+    });
+  }
+
+  function initServiceCarousel() {
+    const carousel = qs('[data-service-carousel]');
+    if (!carousel) return;
+
+    const track = qs('[data-carousel-track]', carousel);
+    const viewport = qs('[data-carousel-viewport]', carousel);
+    const progress = qs('[data-carousel-progress]', carousel);
+    const prev = qs('[data-carousel-prev]', carousel);
+    const next = qs('[data-carousel-next]', carousel);
+    const dotsWrap = qs('[data-carousel-dots]', carousel);
+    const current = qs('[data-carousel-current]', carousel);
+    const currentTitle = qs('[data-carousel-title]', carousel);
+    if (!track || !viewport || !progress || !prev || !next || !dotsWrap || !current || !currentTitle) return;
+
+    const autoDelay = 6200;
+    let index = 0;
+    let progressAnimation = null;
+    let isDragging = false;
+    let dragStartX = 0;
+
+    track.innerHTML = SERVICE_CAROUSEL.map((item) => `
+      <article class="service-carousel-card" data-service-card tabindex="0" aria-label="${item.number}. ${item.title}">
+        <span class="service-card-number">${item.number}</span>
+        <h3>${item.title}</h3>
+        <p>${item.text}</p>
+        <ul>
+          ${item.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
+        </ul>
+        <div class="service-card-meta">${item.meta}</div>
+      </article>
+    `).join('');
+
+    dotsWrap.innerHTML = SERVICE_CAROUSEL.map((item, dotIndex) => `
+      <button class="carousel-dot" type="button" data-carousel-dot="${dotIndex}" aria-label="Ver servicio ${item.number}"></button>
+    `).join('');
+
+    viewport.setAttribute('tabindex', '0');
+
+    function getCards() {
+      return qsa('.service-carousel-card', track);
+    }
+
+    function getDots() {
+      return qsa('.carousel-dot', dotsWrap);
+    }
+
+    function getTargetOffset(cards) {
+      const active = cards[index];
+      if (!active) return 0;
+      const maxOffset = Math.max(0, track.scrollWidth - viewport.clientWidth);
+      return Math.min(active.offsetLeft, maxOffset);
+    }
+
+    function updateActiveState() {
+      const cards = qsa('.service-carousel-card', track);
+      const active = cards[index];
+      if (!active) return;
+
+      cards.forEach((card, cardIndex) => {
+        const isActive = cardIndex === index;
+        card.classList.toggle('is-active', isActive);
+        card.setAttribute('aria-selected', String(isActive));
+      });
+
+      getDots().forEach((dot, dotIndex) => {
+        dot.classList.toggle('is-active', dotIndex === index);
+        dot.setAttribute('aria-current', dotIndex === index ? 'true' : 'false');
+      });
+
+      current.textContent = SERVICE_CAROUSEL[index].number;
+      currentTitle.textContent = SERVICE_CAROUSEL[index].title;
+
+      runAnime({
+        targets: [active, current, currentTitle],
+        opacity: [0.72, 1],
+        translateY: [10, 0],
+        duration: 520,
+        easing: 'easeOutExpo'
+      });
+    }
+
+    function moveTrack() {
+      const cards = getCards();
+      const offset = getTargetOffset(cards);
+
+      if (!window.anime || reduceMotion()) {
+        track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+        return;
+      }
+
+      anime.remove(track);
+      anime({
+        targets: track,
+        translateX: -offset,
+        duration: 760,
+        easing: 'easeInOutCubic'
+      });
+    }
+
+    function moveTo(nextIndex, fromManualAction) {
+      index = (nextIndex + SERVICE_CAROUSEL.length) % SERVICE_CAROUSEL.length;
+
+      moveTrack();
+      updateActiveState();
+      if (fromManualAction) restartProgress();
+    }
+
+    function restartProgress() {
+      if (progressAnimation && typeof progressAnimation.pause === 'function') {
+        progressAnimation.pause();
+      }
+
+      if (!window.anime || reduceMotion()) return;
+
+      anime.remove(progress);
+      progress.style.transform = 'scaleX(0)';
+      progressAnimation = anime({
+        targets: progress,
+        scaleX: [0, 1],
+        duration: autoDelay,
+        easing: 'linear',
+        complete() {
+          moveTo(index + 1, false);
+          restartProgress();
         }
       });
     }
-  });
-}
 
-/* ============================================================
-   CAPABILITIES — circuit drawing + list items
-   ============================================================ */
-function initCapabilities() {
-  ScrollTrigger.create({
-    trigger: '#capabilities',
-    start: 'top 72%',
-    onEnter() {
-      gsap.to('#capLabel', { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out' });
-      gsap.to('#capTitle', { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: 'power3.out' });
+    prev.addEventListener('click', () => moveTo(index - 1, true));
+    next.addEventListener('click', () => moveTo(index + 1, true));
 
-      gsap.to('.cap-list li', {
-        opacity: 1, x: 0,
-        duration: 0.55,
-        stagger: 0.07,
-        delay: 0.2,
-        ease: 'power3.out'
-      });
-
-      /* Reveal circuit diagram */
-      gsap.to('.circuit-wrap', {
-        opacity: 1, scale: 1,
-        duration: 1, delay: 0.35,
-        ease: 'power3.out'
-      });
-
-      /* Draw each path */
-      qsa('.c-path').forEach((path, i) => {
-        const len = path.getTotalLength ? path.getTotalLength() : 300;
-        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          duration: 1.6,
-          delay: 0.55 + i * 0.09,
-          ease: 'power2.inOut'
-        });
-      });
-
-      /* Pop nodes */
-      gsap.to('.c-node', {
-        opacity: 1,
-        stagger: 0.04,
-        delay: 1.3,
-        duration: 0.3,
-        ease: 'back.out(2)'
-      });
-
-      gsap.to('.c-chip', {
-        opacity: 1,
-        delay: 1.5,
-        duration: 0.5,
-        ease: 'power2.out'
-      });
-    }
-  });
-
-  /* Pulse animation on central node */
-  gsap.to('#cpuPulse', {
-    opacity: 0.9, r: 10,
-    duration: 1,
-    repeat: -1, yoyo: true,
-    ease: 'sine.inOut',
-    delay: 2.5
-  });
-}
-
-/* ============================================================
-   CTA
-   ============================================================ */
-function initCTA() {
-  ScrollTrigger.create({
-    trigger: '#cta',
-    start: 'top 68%',
-    onEnter() {
-      gsap.to('.cta-ring', {
-        scale: 1, opacity: 1,
-        duration: 1.6, stagger: 0.22,
-        ease: 'power3.out'
-      });
-
-      gsap.to('#ctaLabel',    { opacity: 1,           duration: 0.5, delay: 0.2 });
-      gsap.to('#ctaHeadline', { opacity: 1, y: 0,     duration: 0.8, delay: 0.3, ease: 'power3.out' });
-      gsap.to('#ctaSub',      { opacity: 1,           duration: 0.6, delay: 0.5 });
-      gsap.to('#ctaActions',  { opacity: 1, y: 0,     duration: 0.6, delay: 0.6, ease: 'back.out(1.4)' });
-      gsap.to('#ctaContact',  { opacity: 1,           duration: 0.6, delay: 0.8 });
-    }
-  });
-
-  /* Pulse glow on primary button */
-  gsap.to('.btn-primary', {
-    boxShadow: '0 0 32px rgba(0,135,90,0.28)',
-    duration: 1.6, repeat: -1, yoyo: true,
-    ease: 'sine.inOut', delay: 2
-  });
-}
-
-/* ============================================================
-   PARALLAX — background text drift
-   ============================================================ */
-function initParallax() {
-  gsap.to('.strength-marquee-inner', {
-    x: '-50%',
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '#strength',
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 3
-    }
-  });
-}
-
-/* ============================================================
-   SMOOTH NAV SCROLL
-   ============================================================ */
-function initNavScroll() {
-  qsa('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const href = a.getAttribute('href');
-      const target = qs(href);
-      if (!target) return;
-      e.preventDefault();
-
-      const heroWrapper = qs('#heroSequenceWrapper');
-      const goesToHeroHome = a.hasAttribute('data-hero-home') && heroWrapper;
-
-      if (goesToHeroHome) {
-        window.dispatchEvent(new Event('hero:resetRequested'));
-        gsap.killTweensOf(window);
-        gsap.to(window, {
-          scrollTo: { y: heroWrapper, offsetY: 0 },
-          duration: 0.8,
-          ease: 'power3.inOut'
-        });
-        return;
-      }
-
-      const servicesReviewProgress = 0.9;
-      const servicesReviewY = heroWrapper
-        ? heroWrapper.offsetTop + ((heroWrapper.offsetHeight - window.innerHeight) * servicesReviewProgress)
-        : 0;
-      const goesToServicesReview = a.hasAttribute('data-services-review') && heroWrapper;
-
-      if (goesToServicesReview) {
-        window.dispatchEvent(new Event('hero:servicesReviewRequested'));
-        gsap.killTweensOf(window);
-        window.scrollTo(0, servicesReviewY);
-        return;
-      }
-
-      gsap.to(window, {
-        scrollTo: { y: target, offsetY: 0 },
-        duration: 1.3,
-        ease: 'power3.inOut'
+    getDots().forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const nextIndex = Number(dot.dataset.carouselDot);
+        if (Number.isFinite(nextIndex)) moveTo(nextIndex, true);
       });
     });
-  });
-}
 
-/* ============================================================
-   BOOT
-   ============================================================ */
-window.addEventListener('DOMContentLoaded', () => {
-  window.scrollTo(0, 0);
+    getCards().forEach((card, cardIndex) => {
+      card.addEventListener('click', () => moveTo(cardIndex, true));
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          moveTo(cardIndex, true);
+        }
+      });
+    });
 
-  initCursor();
-  initScrollProgress();
-  initHeader();
-  initPreloader();
-  initStrength();
-  initProjects();
-  initCapabilities();
-  initCTA();
-  initParallax();
-  initNavScroll();
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        moveTo(index - 1, true);
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        moveTo(index + 1, true);
+      }
+    });
 
-  window.addEventListener('load', () => ScrollTrigger.refresh());
-});
+    viewport.addEventListener('pointerdown', (event) => {
+      isDragging = true;
+      dragStartX = event.clientX;
+      viewport.classList.add('is-dragging');
+      if (progressAnimation && typeof progressAnimation.pause === 'function') progressAnimation.pause();
+    });
+
+    viewport.addEventListener('pointerup', (event) => {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.classList.remove('is-dragging');
+      const delta = event.clientX - dragStartX;
+      if (Math.abs(delta) > 44) moveTo(index + (delta < 0 ? 1 : -1), true);
+      else restartProgress();
+    });
+
+    viewport.addEventListener('pointerleave', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.classList.remove('is-dragging');
+      restartProgress();
+    });
+
+    carousel.addEventListener('mouseenter', () => {
+      if (progressAnimation && typeof progressAnimation.pause === 'function') progressAnimation.pause();
+    });
+
+    carousel.addEventListener('mouseleave', () => restartProgress());
+    window.addEventListener('resize', () => moveTrack());
+
+    moveTo(0, false);
+    restartProgress();
+  }
+
+  function initProjectMasks() {
+    qsa('.project-card').forEach((card, index) => {
+      const mask = qs('.project-reveal', card);
+      if (!mask) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        runAnime({
+          targets: mask,
+          scaleX: [1, 0],
+          duration: 900,
+          delay: index * 90,
+          easing: 'easeInOutQuart'
+        });
+      }, { threshold: 0.28 });
+
+      observer.observe(card);
+    });
+  }
+
+  function initRings() {
+    const section = qs('.cta-section');
+    const rings = qsa('.cta-ring');
+    if (!section || !rings.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      runAnime({
+        targets: rings,
+        scale: [0.4, 1],
+        opacity: [0, 1],
+        delay: window.anime && window.anime.stagger ? window.anime.stagger(140) : 0,
+        duration: 1100,
+        easing: 'easeOutExpo'
+      });
+    }, { threshold: 0.25 });
+
+    observer.observe(section);
+  }
+
+  function initParallax() {
+    const medias = qsa('[data-parallax] img');
+    if (!medias.length || reduceMotion()) return;
+
+    let ticking = false;
+    const update = () => {
+      const vh = window.innerHeight || 1;
+      medias.forEach((img) => {
+        const rect = img.parentElement.getBoundingClientRect();
+        if (rect.bottom < -120 || rect.top > vh + 120) return;
+        const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
+        const y = Math.max(-32, Math.min(32, progress * -42));
+        img.style.transform = `translateY(${y}px) scale(1.08)`;
+      });
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  }
+
+  function initNavScroll() {
+    qsa('a[href^="#"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const href = link.getAttribute('href');
+        const target = href ? qs(href) : null;
+        if (!target) return;
+
+        event.preventDefault();
+
+        if (link.hasAttribute('data-hero-home')) {
+          window.dispatchEvent(new Event('hero:resetRequested'));
+        }
+
+        const start = window.scrollY;
+        const header = qs('#header');
+        const headerOffset = link.hasAttribute('data-hero-home') ? 0 : ((header?.offsetHeight || 0) + 16);
+        const end = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
+        const state = { y: start };
+
+        if (!window.anime || reduceMotion()) {
+          window.scrollTo(0, end);
+          return;
+        }
+
+        anime.remove(state);
+        anime({
+          targets: state,
+          y: end,
+          duration: 900,
+          easing: 'easeInOutCubic',
+          update() {
+            window.scrollTo(0, state.y);
+          }
+        });
+      });
+    });
+  }
+
+  function initInteractiveCards() {
+    if (isTouch() || reduceMotion()) return;
+
+    qsa('.standard-card, .service-detail-card, .service-carousel-card, .portfolio-card, .metric-item, .company-stat, .values-grid span').forEach((card) => {
+      card.addEventListener('mouseenter', () => {
+        runAnime({
+          targets: card,
+          translateY: -6,
+          scale: 1.015,
+          duration: 260,
+          easing: 'easeOutExpo'
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        runAnime({
+          targets: card,
+          translateY: 0,
+          scale: 1,
+          duration: 360,
+          easing: 'easeOutExpo'
+        });
+      });
+    });
+  }
+
+  function boot() {
+    initServiceCarousel();
+    initScrollProgress();
+    initHeader();
+    initCompanyMarquee();
+    initReveals();
+    initCounters();
+    initProjectMasks();
+    initRings();
+    initParallax();
+    initNavScroll();
+    initInteractiveCards();
+    initPreloader();
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+}());

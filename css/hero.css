@@ -10,14 +10,29 @@
 
 /* ---- Sticky stage ---- */
 #hero {
-  position: relative;
+  position: absolute;
   top: 0;
+  left: 0;
   height: 100vh;
   height: 100dvh;
   width: 100%;
   overflow: hidden;
   background: var(--navy); /* fallback while frame 0 loads */
   z-index: 10;
+}
+
+#hero.hero-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#hero.hero-complete {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: 0;
 }
 
 /* ---- Sequence canvas ---- */
@@ -98,7 +113,7 @@
   z-index: 2;
   width: min(92vw, 1200px);
   text-align: center;
-  font-size: clamp(4rem, 13vw, 11rem);
+  font-size: 9rem;
   font-weight: 900;
   line-height: 0.9;
   color: rgba(13, 31, 60, 0.9);
@@ -197,7 +212,7 @@
   gap: 0.65rem;
   font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--green);
   margin-bottom: 1.1rem;
@@ -236,7 +251,7 @@
   font-weight: 800;
   color: var(--navy);
   line-height: 1.2;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin-bottom: 0.6rem;
 }
 
@@ -255,8 +270,7 @@
   font-weight: 600;
   color: var(--green);
   text-decoration: none;
-  letter-spacing: 0.04em;
-  cursor: none;
+  letter-spacing: 0;
 }
 
 .hsvc-link svg {
@@ -371,7 +385,7 @@
   #heroContent { padding: 5rem 1.5rem 2rem; }
 
   .hero-offer-title {
-    font-size: clamp(3.25rem, 18vw, 7rem);
+    font-size: 5.4rem;
     top: 48%;
   }
 }
@@ -396,6 +410,6 @@
   }
 
   .hero-offer-title {
-    font-size: clamp(2.9rem, 17vw, 5rem);
+    font-size: 3.25rem;
   }
 }

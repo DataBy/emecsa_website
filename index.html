@@ -3,35 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="EMECSA — Soluciones Electromecánicas de Precisión. Mantenimiento industrial, automatización, instalaciones eléctricas e ingeniería a medida.">
-  <title>EMECSA — Soluciones Electromecánicas de Precisión</title>
+  <meta name="description" content="EMECSA — Constructora electromecánica en Costa Rica. Consultoría, diseño, construcción, remodelaciones, sistemas especiales y verificaciones eléctricas. CFIA CC-08813, NFPA 70 y NFPA 72.">
+  <title>EMECSA | Constructora Electromecánica en Costa Rica</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="logo/logo.png" type="image/png">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
 
-  <!-- GSAP (main.js dependency) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js" defer></script>
-
-  <!-- Anime.js (hero.js dependency) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js" defer></script>
-
-  <!-- Scripts (deferred: execute in order after DOM is ready) -->
   <script src="js/main.js" defer></script>
   <script src="js/hero.js" defer></script>
 </head>
 <body class="is-loading">
-
-  <!-- ============================================================
-       PRELOADER
-       ============================================================ -->
   <div id="preloader">
     <div class="preloader-logo">
       <img src="logo/logo_blanco.png" alt="EMECSA">
@@ -41,23 +28,10 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       CUSTOM CURSOR
-       ============================================================ -->
-  <div class="cursor"          id="cursor"></div>
-  <div class="cursor-follower" id="cursorFollower"></div>
-
-  <!-- ============================================================
-       SCROLL PROGRESS (full-page)
-       ============================================================ -->
   <div class="scroll-progress"></div>
 
-  <!-- ============================================================
-       HEADER
-       ============================================================ -->
   <header id="header">
     <a href="#heroSequenceWrapper" class="header-logo" id="headerLogo" data-hero-home aria-label="Ir al inicio">
-      <!-- ASSET: /logo/logo.png -->
       <img
         src="logo/logo.png"
         alt="EMECSA"
@@ -65,39 +39,21 @@
       >
     </a>
 
-    <nav>
-      <!-- Services nav link now scrolls to strength section (services section removed) -->
-      <a href="#strength" data-services-review>Servicios</a>
+    <nav aria-label="Navegación principal">
+      <a href="#company">Empresa</a>
+      <a href="#services">Servicios</a>
+      <a href="#standards">Normas</a>
       <a href="#projects">Proyectos</a>
-      <a href="#capabilities">Capacidades</a>
-      <a href="#cta" class="nav-cta">Contacto</a>
+      <a href="https://wa.me/50687570522?text=Hola%20EMECSA%2C%20quisiera%20conversar%20sobre%20un%20proyecto%20electromec%C3%A1nico." class="nav-cta" target="_blank" rel="noopener">WhatsApp</a>
     </nav>
   </header>
 
-  <!-- ============================================================
-       SECTION 1 — HERO (scroll-driven sequence)
-
-       #heroSequenceWrapper: 1200 vh tall — provides the scroll runway.
-       #hero inside it is position:sticky, so it stays pinned to the
-       viewport while the user scrolls through the wrapper height.
-       hero.js maps scroll progress (0→1) to frame index (0→239).
-       ============================================================ -->
   <div id="heroSequenceWrapper">
     <section id="hero">
-
-      <!-- Image sequence canvas — hero.js draws frames here -->
       <canvas id="seqCanvas"></canvas>
-
-      <!-- Radial vignette — softens image for text readability at progress=0 -->
       <div class="hero-seq-overlay" aria-hidden="true"></div>
 
-      <!-- ── Initial hero content (logo / headline / CTAs) ──────────────
-           hero.js fades this out as scroll progress approaches 0.07.
-           GSAP entrance animation (main.js) fades it IN after preloader.
-           ──────────────────────────────────────────────────────────── -->
       <div class="hero-content" id="heroContent">
-
-        <!-- ASSET: /logo/logo.png -->
         <div class="hero-logo-wrap" id="heroLogo">
           <img
             src="logo/logo.png"
@@ -106,12 +62,10 @@
           >
         </div>
 
-        <p class="hero-eyebrow" id="heroEyebrow">
-          Soluciones Electromecánicas de Precisión
-        </p>
+        <p class="hero-eyebrow" id="heroEyebrow">Soluciones Electromecánicas</p>
 
         <h1 class="hero-headline" id="heroHeadline">
-          Ingeniería que<br><em>mueve industrias</em>
+          Ingeniería que<br><em>Mueve Industrias</em>
         </h1>
 
         <p class="hero-sub" id="heroSub">
@@ -120,7 +74,7 @@
         </p>
 
         <div class="hero-cta-row" id="heroCtaRow">
-          <a href="#strength" class="btn-primary" data-services-review>
+          <a href="#services" class="btn-primary">
             <span>Ver Servicios</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -130,34 +84,25 @@
         </div>
       </div>
 
-      <div class="hero-offer-title" id="heroOfferTitle" aria-hidden="true">
-        Ofrecemos
-      </div>
+      <div class="hero-offer-title" id="heroOfferTitle" aria-hidden="true">Ofrecemos</div>
 
       <div class="hsvc-review-grid" id="hsvcReviewGrid" aria-label="Servicios principales">
-
-        <!-- ── Service Card 1 — Mantenimiento Industrial ──────────────────
-             Visible after the "Ofrecemos" title.
-             ──────────────────────────────────────────────────────────── -->
-        <div class="hsvc-card" id="hsvc-0" aria-label="Servicio: Mantenimiento Industrial">
+        <div class="hsvc-card" id="hsvc-0" aria-label="Servicio: Consultoría electromecánica">
           <div class="hsvc-number">01</div>
           <div class="hsvc-icon">
             <svg viewBox="0 0 24 24">
               <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
             </svg>
           </div>
-          <h3 class="hsvc-title">Mantenimiento Industrial</h3>
-          <p class="hsvc-desc">Programas preventivos y correctivos para mantener su planta operando al máximo rendimiento con mínimo tiempo de parada.</p>
-          <a href="#cta" class="hsvc-link">
+          <h3 class="hsvc-title">Consultoría Electromecánica</h3>
+          <p class="hsvc-desc">Diseño de planos eléctricos, sistemas especiales, sistemas mecánicos, supresión de incendios y verificaciones eléctricas para trámites oficiales.</p>
+          <a href="servicios.html#consultoria" class="hsvc-link">
             Más información
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
 
-        <!-- ── Service Card 2 — Automatización ───────────────────────────
-             Appears after the first service card.
-             ──────────────────────────────────────────────────────────── -->
-        <div class="hsvc-card" id="hsvc-1" aria-label="Servicio: Automatización">
+        <div class="hsvc-card" id="hsvc-1" aria-label="Servicio: Construcción electromecánica">
           <div class="hsvc-number">02</div>
           <div class="hsvc-icon">
             <svg viewBox="0 0 24 24">
@@ -166,36 +111,30 @@
               <circle cx="12" cy="10" r="3"/>
             </svg>
           </div>
-          <h3 class="hsvc-title">Automatización</h3>
-          <p class="hsvc-desc">Integración de sistemas de control PLC, SCADA y HMI para optimizar procesos productivos y reducir costos operativos.</p>
-          <a href="#cta" class="hsvc-link">
+          <h3 class="hsvc-title">Construcción Electromecánica</h3>
+          <p class="hsvc-desc">Ejecución completa de acometidas, canalizaciones, tableros, luminarias, refrigeración, telecomunicaciones, bombas y sistemas mecánicos.</p>
+          <a href="servicios.html#construccion" class="hsvc-link">
             Más información
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
 
-        <!-- ── Service Card 3 — Instalaciones Eléctricas ─────────────────
-             Appears after the second service card.
-             ──────────────────────────────────────────────────────────── -->
-        <div class="hsvc-card" id="hsvc-2" aria-label="Servicio: Instalaciones Eléctricas">
+        <div class="hsvc-card" id="hsvc-2" aria-label="Servicio: Sistemas especiales">
           <div class="hsvc-number">03</div>
           <div class="hsvc-icon">
             <svg viewBox="0 0 24 24">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
             </svg>
           </div>
-          <h3 class="hsvc-title">Instalaciones Eléctricas</h3>
-          <p class="hsvc-desc">Proyectos de media y baja tensión, tableros de distribución, cableado estructurado y sistemas de protección eléctrica.</p>
-          <a href="#cta" class="hsvc-link">
+          <h3 class="hsvc-title">Sistemas Especiales</h3>
+          <p class="hsvc-desc">CCTV, telecomunicaciones, sonido, tomacorrientes, iluminación, detección y supresión de incendios para edificios comerciales e institucionales.</p>
+          <a href="servicios.html#sistemas-especiales" class="hsvc-link">
             Más información
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
 
-        <!-- ── Service Card 4 — Ingeniería a Medida ──────────────────────
-             Appears after the third service card.
-             ──────────────────────────────────────────────────────────── -->
-        <div class="hsvc-card" id="hsvc-3" aria-label="Servicio: Ingeniería a Medida">
+        <div class="hsvc-card" id="hsvc-3" aria-label="Servicio: Remodelaciones y control">
           <div class="hsvc-number">04</div>
           <div class="hsvc-icon">
             <svg viewBox="0 0 24 24">
@@ -204,273 +143,282 @@
               <path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/>
             </svg>
           </div>
-          <h3 class="hsvc-title">Ingeniería a Medida</h3>
-          <p class="hsvc-desc">Diseño y desarrollo de soluciones electromecánicas personalizadas adaptadas a las necesidades específicas de su proceso.</p>
-          <a href="#cta" class="hsvc-link">
+          <h3 class="hsvc-title">Remodelaciones y Control</h3>
+          <p class="hsvc-desc">Intervenciones en baja tensión, refrigeración, aguas grises, áreas de proceso, automatizaciones y sistemas de control residenciales, comerciales e industriales.</p>
+          <a href="servicios.html#remodelaciones" class="hsvc-link">
             Más información
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
-
       </div>
 
-      <!-- Sequence progress bar (bottom edge) -->
       <div class="seq-progress-bar" aria-hidden="true">
         <div class="seq-progress-fill" id="seqProgressFill"></div>
       </div>
 
-      <!-- Scroll cue -->
       <div class="hero-scroll-cue" id="heroScrollCue">
         <span>Scroll</span>
         <div class="scroll-line"></div>
       </div>
-
     </section>
-  </div><!-- /#heroSequenceWrapper -->
+  </div>
 
-  <!-- ============================================================
-       SECTION 2 — STRENGTH / STATS
-       ============================================================ -->
-  <section id="strength">
-
-    <!-- Marquee background text -->
-    <div class="strength-marquee" aria-hidden="true">
-      <span class="strength-marquee-inner">
-        EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;EMECSA&nbsp;&nbsp;·&nbsp;&nbsp;
-      </span>
-    </div>
-
-    <div class="strength-inner">
-
-      <div class="section-label" id="strengthLabel">Experiencia Comprobada</div>
-      <h2 class="section-title"  id="strengthTitle">
-        Números que<br><em>hablan por sí solos</em>
-      </h2>
-
-      <div class="stats-grid">
-
-        <div class="stat-item">
-          <div class="stat-number">
-            <span class="stat-count" data-target="25">0</span>
-            <span class="stat-suffix">+</span>
-          </div>
-          <div class="stat-label">Años de Experiencia</div>
-          <div class="stat-bar"><div class="stat-bar-fill"></div></div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-number">
-            <span class="stat-count" data-target="800">0</span>
-            <span class="stat-suffix">+</span>
-          </div>
-          <div class="stat-label">Proyectos Completados</div>
-          <div class="stat-bar"><div class="stat-bar-fill"></div></div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-number">
-            <span class="stat-count" data-target="150">0</span>
-            <span class="stat-suffix">+</span>
-          </div>
-          <div class="stat-label">Clientes Activos</div>
-          <div class="stat-bar"><div class="stat-bar-fill"></div></div>
-        </div>
-
+  <main id="content">
+    <section class="section company-section company-stats-section" id="company">
+      <div class="company-marquee" aria-hidden="true">
+        <span data-company-marquee>EMECSA · EMECSA · EMECSA · EMECSA · EMECSA · EMECSA · </span>
+        <span data-company-marquee>EMECSA · EMECSA · EMECSA · EMECSA · EMECSA · EMECSA · </span>
       </div>
-    </div>
-  </section>
 
-  <!-- ============================================================
-       SECTION 3 — PROJECTS SHOWCASE
-       ============================================================ -->
-  <section id="projects">
-    <div class="inner">
+      <div class="company-stats-inner">
+        <div class="company-copy" data-reveal>
+          <div class="section-label">Nuestra empresa</div>
+          <h2 class="section-title">La experiencia técnica que mantiene sus proyectos avanzando.</h2>
+          <p class="lead">
+            EMECSA nació en San Carlos para integrar diseño, consultoría y construcción
+            electromecánica. Hoy desarrolla proyectos en todo Costa Rica para empresas
+            privadas y sector público.
+          </p>
+          <div class="company-proof-row">
+            <div><span>Fundada</span><strong>19 de febrero de 2015</strong></div>
+            <div><span>Fundador</span><strong>Ing. Guillermo Schwartz Quesada</strong></div>
+            <div><span>CFIA</span><strong>CC-08813</strong></div>
+          </div>
+        </div>
 
-      <div class="section-label" id="projectsLabel">Portafolio</div>
-      <h2 class="section-title"  id="projectsTitle">
-        Proyectos que<br><em>definen estándares</em>
-      </h2>
+        <div class="company-stats-grid" data-reveal data-company-stats>
+          <article class="company-stat">
+            <strong><span data-counter="10">0</span><sup>+</sup></strong>
+            <span>Años de experiencia</span>
+            <div class="company-stat-bar"><span></span></div>
+          </article>
+          <article class="company-stat">
+            <strong><span data-counter="25">0</span><sup>+</sup></strong>
+            <span>Proyectos documentados</span>
+            <div class="company-stat-bar"><span></span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-scroll" id="services">
+      <div class="services-carousel-shell">
+        <div class="services-heading" data-reveal>
+          <div class="section-label">Servicios</div>
+          <h2 class="section-title">Servicios Electromecánicos</h2>
+          <p class="lead">
+            Diseño, construcción, remodelación, sistemas especiales y control para proyectos
+            residenciales, comerciales, institucionales e industriales.
+          </p>
+        </div>
+
+        <div class="service-carousel" data-service-carousel data-reveal aria-label="Carrusel de servicios electromecánicos">
+          <div class="service-carousel-top">
+            <div class="service-carousel-status" aria-live="polite">
+              <span data-carousel-current>01</span>
+              <strong data-carousel-title>Consultoría y diseño electromecánico</strong>
+            </div>
+            <div class="service-carousel-controls">
+              <button class="carousel-btn" type="button" data-carousel-prev aria-label="Servicio anterior">
+                <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button class="carousel-btn" type="button" data-carousel-next aria-label="Servicio siguiente">
+                <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="service-carousel-viewport" data-carousel-viewport>
+            <div class="service-carousel-track" data-carousel-track></div>
+          </div>
+
+          <div class="service-carousel-footer">
+            <div class="service-carousel-dots" data-carousel-dots aria-label="Seleccionar servicio"></div>
+            <div class="service-carousel-progress" aria-hidden="true">
+              <span data-carousel-progress></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="services-cta">
+          <a href="servicios.html" class="btn-primary">
+            <span>Ver todos los servicios</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section standards-section" id="standards">
+      <div class="section-heading centered" data-reveal>
+        <div class="section-label">Normas y respaldo</div>
+        <h2 class="section-title">Normas, registro profesional y cultura de cumplimiento que reducen riesgo desde el diseño.</h2>
+        <p class="lead">La web prioriza los elementos que respaldan la seriedad técnica de EMECSA: inscripción profesional, normativa contra incendios y cumplimiento documental.</p>
+      </div>
+
+      <div class="standards-grid">
+        <article class="standard-card" data-reveal>
+          <span>CFIA</span>
+          <h3>Código CC-08813</h3>
+          <p>Empresa inscrita ante el Colegio Federado de Ingenieros y de Arquitectos para servicios de ingeniería y construcción electromecánica.</p>
+        </article>
+        <article class="standard-card" data-reveal>
+          <span>NFPA 70</span>
+          <h3>Seguridad eléctrica</h3>
+          <p>Certificación indicada por la empresa para el trabajo de instalaciones, diseños y verificaciones eléctricas.</p>
+        </article>
+        <article class="standard-card" data-reveal>
+          <span>NFPA 72</span>
+          <h3>Detección y alarma</h3>
+          <p>Base normativa para sistemas de detección de incendios presentes en proyectos comerciales, industriales e institucionales.</p>
+        </article>
+        <article class="standard-card" data-reveal>
+          <span>Gestión</span>
+          <h3>Residuos y responsabilidad</h3>
+          <p>Plan de gestión de residuos en conjunto con municipalidad, alineado con una cultura de trabajo responsable.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section projects-section" id="projects">
+      <div class="section-heading" data-reveal>
+        <div>
+          <div class="section-label">Proyectos</div>
+          <h2 class="section-title">Obras ejecutadas que demuestran capacidad técnica en campo.</h2>
+        </div>
+      </div>
 
       <div class="projects-grid">
-
-        <!-- ASSET: Replace .project-placeholder with <img src="/images/project-main.jpg"> -->
-        <div class="project-card project-card--featured" id="projCard1">
-          <div class="project-reveal" id="projReveal1"></div>
-          <div class="project-placeholder">
-            <span class="project-placeholder-label">Imagen Proyecto Principal</span>
-          </div>
+        <article class="project-card project-card--featured" data-reveal>
+          <div class="project-reveal"></div>
+          <img src="assets/pdf/page-11-01.jpg" alt="Construcción electromecánica Palí Ciudad Quesada" loading="lazy">
           <div class="project-overlay"></div>
           <div class="project-info">
-            <div class="project-tag">Automatización Industrial</div>
-            <div class="project-title">Sistema de Control Integrado — Planta Norte</div>
+            <div class="project-tag">Construcción electromecánica</div>
+            <h3>Palí Ciudad Quesada, San Carlos</h3>
+            <p>Sistema eléctrico completo, refrigeración, pararrayos, telecomunicaciones, aguas negras, pluviales, agua potable y bombas.</p>
           </div>
-        </div>
+        </article>
 
-        <!-- ASSET: Replace with <img src="/images/project-2.jpg"> -->
-        <div class="project-card" id="projCard2">
-          <div class="project-reveal" id="projReveal2"></div>
-          <div class="project-placeholder project-placeholder--b">
-            <span class="project-placeholder-label">Instalación Eléctrica</span>
-          </div>
+        <article class="project-card" data-reveal>
+          <div class="project-reveal"></div>
+          <img src="assets/pdf/page-12-01.jpg" alt="Planta empacadora Finca La Ligia Parrita" loading="lazy">
           <div class="project-overlay"></div>
           <div class="project-info">
-            <div class="project-tag">Instalaciones Eléctricas</div>
-            <div class="project-title">Tablero MT — Centro Logístico Sur</div>
+            <div class="project-tag">Industrial</div>
+            <h3>Planta Empacadora Finca La Ligia</h3>
+            <p>Acometidas en media tensión, transformador de pedestal, alimentadores, tableros eléctricos y detección de incendios.</p>
           </div>
-        </div>
+        </article>
 
-        <!-- ASSET: Replace with <img src="/images/project-3.jpg"> -->
-        <div class="project-card" id="projCard3">
-          <div class="project-reveal" id="projReveal3"></div>
-          <div class="project-placeholder project-placeholder--c">
-            <span class="project-placeholder-label">Ingeniería a Medida</span>
-          </div>
+        <article class="project-card" data-reveal>
+          <div class="project-reveal"></div>
+          <img src="assets/pdf/page-14-02.jpg" alt="Bodega de producto terminado Soldanza" loading="lazy">
           <div class="project-overlay"></div>
           <div class="project-info">
-            <div class="project-tag">Ingeniería a Medida</div>
-            <div class="project-title">Solución Personalizada — Industria Alimentaria</div>
+            <div class="project-tag">Industrial / Incendios</div>
+            <h3>Ampliación Bodega Producto Terminado</h3>
+            <p>3.800 m² para Soldanza con sistema eléctrico, detección y supresión de incendios por gabinetes clase III.</p>
           </div>
-        </div>
-
+        </article>
       </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       SECTION 4 — TECHNICAL CAPABILITIES
-       ============================================================ -->
-  <section id="capabilities">
-    <div class="capabilities-grid">
-
-      <div class="capabilities-text">
-        <div class="section-label" id="capLabel">Capacidades Técnicas</div>
-        <h2 class="section-title"  id="capTitle">
-          Tecnología de<br><em>vanguardia</em>
-        </h2>
-
-        <ul class="cap-list" id="capList">
-          <li>Programación PLC (Siemens, Allen-Bradley, Schneider)</li>
-          <li>Diseño de tableros eléctricos de media tensión</li>
-          <li>Sistemas SCADA y supervisión remota</li>
-          <li>Certificación en normas IEC, NEC y reglamentos locales</li>
-          <li>Ingeniería de detalle y documentación técnica completa</li>
-          <li>Puesta en marcha y commissioning</li>
-          <li>Capacitación técnica al personal cliente</li>
-        </ul>
-      </div>
-
-      <div class="circuit-wrap" id="circuitWrap">
-        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-
-          <g fill="rgba(0,135,90,0.12)">
-            <circle cx="80"  cy="80"  r="1.5"/> <circle cx="160" cy="80"  r="1.5"/>
-            <circle cx="240" cy="80"  r="1.5"/> <circle cx="320" cy="80"  r="1.5"/>
-            <circle cx="80"  cy="160" r="1.5"/> <circle cx="160" cy="160" r="1.5"/>
-            <circle cx="240" cy="160" r="1.5"/> <circle cx="320" cy="160" r="1.5"/>
-            <circle cx="80"  cy="240" r="1.5"/> <circle cx="160" cy="240" r="1.5"/>
-            <circle cx="240" cy="240" r="1.5"/> <circle cx="320" cy="240" r="1.5"/>
-            <circle cx="80"  cy="320" r="1.5"/> <circle cx="160" cy="320" r="1.5"/>
-            <circle cx="240" cy="320" r="1.5"/> <circle cx="320" cy="320" r="1.5"/>
-          </g>
-
-          <path class="c-path" d="M 200 40  L 200 110 L 300 110 L 300 200"/>
-          <path class="c-path" d="M 200 40  L 200 110 L 100 110 L 100 200"/>
-          <path class="c-path" d="M 200 110 L 200 175"/>
-          <path class="c-path" d="M 200 225 L 200 290 L 110 290 L 110 350"/>
-          <path class="c-path" d="M 200 225 L 200 290 L 300 290 L 300 330"/>
-          <path class="c-path" d="M 100 200 L 50 200 L 50 300 L 100 300"/>
-          <path class="c-path" d="M 300 200 L 360 200 L 360 140"/>
-          <path class="c-path" d="M 100 200 L 100 130"/>
-          <path class="c-path" d="M 300 200 L 300 120"/>
-
-          <rect class="c-chip" id="cpuChip" x="168" y="175" width="64" height="50" rx="4"/>
-
-          <circle class="c-node" cx="200" cy="40"  r="5"/>
-          <circle class="c-node" cx="200" cy="110" r="3.5"/>
-          <circle class="c-node" cx="300" cy="110" r="3.5"/>
-          <circle class="c-node" cx="100" cy="110" r="3.5"/>
-          <circle class="c-node" cx="300" cy="200" r="3.5"/>
-          <circle class="c-node" cx="100" cy="200" r="3.5"/>
-          <circle class="c-node" cx="200" cy="290" r="3.5"/>
-
-          <circle id="cpuPulse" cx="200" cy="200" r="6" fill="var(--green-light)" opacity="0"/>
-
-          <text class="c-label" x="210" y="37">PWR</text>
-          <text class="c-label" x="308" y="108">OUT_A</text>
-          <text class="c-label" x="52"  y="108">OUT_B</text>
-          <text class="c-label" x="175" y="199" font-size="10" font-weight="700" fill="rgba(0,192,122,0.85)">CPU</text>
-          <text class="c-label" x="308" y="288">GND_A</text>
-          <text class="c-label" x="60"  y="288">GND_B</text>
-        </svg>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================================
-       SECTION 5 — CALL TO ACTION
-       ============================================================ -->
-  <section id="cta">
-
-    <div class="cta-ring"></div>
-    <div class="cta-ring"></div>
-    <div class="cta-ring"></div>
-
-    <div class="cta-content">
-      <div class="section-label" id="ctaLabel" style="transform:none;">Trabajemos Juntos</div>
-
-      <h2 class="cta-headline" id="ctaHeadline">
-        ¿Listo para el<br>siguiente <em>nivel</em>?
-      </h2>
-
-      <p class="cta-sub" id="ctaSub">
-        Cuéntenos su proyecto. Nuestro equipo de ingeniería analiza sus
-        necesidades y propone la solución óptima sin costo.
-      </p>
-
-      <div class="cta-actions" id="ctaActions">
-        <!-- CONTACT: Replace href with actual email or contact page -->
-        <a href="mailto:contacto@emecsa.com" class="btn-primary">
-          <span>Iniciar Proyecto</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+      <div class="projects-cta" data-reveal>
+        <a href="proyectos.html" class="btn-primary">
+          <span>Ver más proyectos</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
+    </section>
 
-      <div class="cta-contact-row" id="ctaContact">
-        <div class="cta-contact-item">
-          <span class="label">Email</span>
-          <!-- CONTACT: Replace with actual email -->
-          <span class="value">contacto@emecsa.com</span>
-        </div>
-        <div class="cta-contact-item">
-          <span class="label">Teléfono</span>
-          <!-- CONTACT: Replace with actual phone -->
-          <span class="value">+506 8888 8888</span>
-        </div>
-        <div class="cta-contact-item">
-          <span class="label">Ubicación</span>
-          <!-- CONTACT: Replace with actual location -->
-          <span class="value">Ciudad Quesada, San Carlos, Costa Rica</span>
+    <section class="section sectors-section" id="sectors">
+      <div class="split-layout reverse">
+        <figure class="parallax-media" data-reveal data-parallax>
+          <img src="assets/pdf/page-04-02.jpg" alt="Instalaciones electromecánicas en nave industrial" loading="lazy">
+        </figure>
+        <div class="copy-block" data-reveal>
+          <div class="section-label">Cobertura sectorial</div>
+          <h2 class="section-title">Experiencia comprobada en sectores donde la continuidad operativa importa.</h2>
+          <p class="lead">
+            El portafolio del PDF incluye condominios, residencias, hoteles, centros
+            comerciales, escuelas, centros de distribución, plantas industriales,
+            supermercados, restaurantes, oficinas y edificios públicos.
+          </p>
+          <div class="sector-list">
+            <div><strong>Residencial</strong><span>Kyrenia, Playa Avellanas, Belén, Sardinal.</span></div>
+            <div><strong>Comercial</strong><span>Hotel Mi Linda Tierra, locales, gimnasios, centros de distribución.</span></div>
+            <div><strong>Industrial</strong><span>Plantas procesadoras, Soldanza, APM Terminals, Zona Franca Muelle.</span></div>
+            <div><strong>Institucional</strong><span>Escuela y Liceo de Sucre, Coopesantos, Poder Judicial Sarapiquí.</span></div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============================================================
-       FOOTER
-       ============================================================ -->
+    <section class="section culture-section">
+      <div class="culture-grid">
+        <div class="copy-block" data-reveal>
+          <div class="section-label">Cultura organizacional</div>
+          <h2 class="section-title">Un equipo serio para proyectos donde la confianza pesa tanto como la técnica.</h2>
+          <p class="lead">
+            EMECSA declara una cultura de trabajo inclusiva, colaborativa y orientada
+            al cliente. Sus valores base son compromiso, seriedad, responsabilidad y honestidad.
+          </p>
+        </div>
+        <div class="values-grid" data-reveal>
+          <span>Compromiso</span>
+          <span>Seriedad</span>
+          <span>Responsabilidad</span>
+          <span>Honestidad</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-section" id="cta">
+      <div class="cta-ring"></div>
+      <div class="cta-ring"></div>
+      <div class="cta-ring"></div>
+
+      <div class="cta-content" data-reveal>
+        <div class="section-label">Contacto</div>
+        <h2 class="cta-headline">Conversemos sobre su próximo proyecto electromecánico.</h2>
+        <p class="cta-sub">
+          Cuéntenos el tipo de obra, ubicación y alcance inicial para coordinar una conversación técnica con el equipo.
+        </p>
+        <div class="cta-actions">
+          <a href="https://wa.me/50687570522?text=Hola%20EMECSA%2C%20quisiera%20cotizar%20un%20proyecto%20electromec%C3%A1nico." class="btn-primary" target="_blank" rel="noopener">
+            <span>Escribir por WhatsApp</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="proyectos.html" class="btn-ghost dark-text">Ver portafolio completo</a>
+        </div>
+
+        <div class="cta-contact-row">
+          <div class="cta-contact-item">
+            <span class="label">Email</span>
+            <span class="value">info@emecsacr.com</span>
+          </div>
+          <div class="cta-contact-item">
+            <span class="label">Teléfono</span>
+            <span class="value">2461-7631 / 8757-0522</span>
+          </div>
+          <div class="cta-contact-item">
+            <span class="label">WhatsApp adicional</span>
+            <span class="value">8920-9182</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
   <footer>
     <div class="footer-brand">
       <img src="logo/logo_blanco.png" alt="EMECSA">
     </div>
     <span class="footer-copy">© 2026 EMECSA. Todos los derechos reservados.</span>
     <div class="footer-links">
-      <a href="#">Política de Privacidad</a>
-      <a href="#">Términos y Condiciones</a>
+      <a href="empresa.html">Empresa</a>
+      <a href="servicios.html">Servicios</a>
+      <a href="proyectos.html">Proyectos</a>
     </div>
   </footer>
-
 </body>
 </html>
