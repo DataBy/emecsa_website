@@ -328,23 +328,33 @@
     let isDragging = false;
     let dragStartX = 0;
 
-    track.innerHTML = SERVICE_CAROUSEL.map((item) => `
+    track.innerHTML = SERVICE_CAROUSEL.map((item) => {
+      const imagePath = `imgs/${Number(item.number)}.png`;
+      return `
       <article class="service-carousel-card" data-service-card tabindex="0" aria-label="${item.number}. ${item.title}">
-        <span class="service-card-number">${item.number}</span>
-        <h3>${item.title}</h3>
-        <p>${item.text}</p>
-        <ul>
-          ${item.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
-        </ul>
-        <div class="service-card-meta">${item.meta}</div>
+        <div class="service-card-media">
+          <img src="${imagePath}" alt="${item.title}" loading="lazy">
+        </div>
+        <div class="service-card-content">
+          <span class="service-card-number">${item.number}</span>
+          <h3>${item.title}</h3>
+          <p>${item.text}</p>
+          <ul>
+            ${item.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
+          </ul>
+          <div class="service-card-meta">${item.meta}</div>
+        </div>
       </article>
-    `).join('');
+    `;
+    }).join('');
 
     dotsWrap.innerHTML = SERVICE_CAROUSEL.map((item, dotIndex) => `
       <button class="carousel-dot" type="button" data-carousel-dot="${dotIndex}" aria-label="Ver servicio ${item.number}"></button>
     `).join('');
 
     viewport.setAttribute('tabindex', '0');
+
+    const EDGE_PADDING = window.matchMedia('(max-width: 820px)').matches ? 30 : 34;
 
     function getCards() {
       return qsa('.service-carousel-card', track);
@@ -354,11 +364,19 @@
       return qsa('.carousel-dot', dotsWrap);
     }
 
+    function syncTrackEdges(cards) {
+      const active = cards[index];
+      if (!active) return;
+
+      track.style.paddingLeft = `${EDGE_PADDING}px`;
+      track.style.paddingRight = `${EDGE_PADDING}px`;
+    }
+
     function getTargetOffset(cards) {
       const active = cards[index];
       if (!active) return 0;
       const maxOffset = Math.max(0, track.scrollWidth - viewport.clientWidth);
-      return Math.min(active.offsetLeft, maxOffset);
+      return Math.max(0, Math.min(active.offsetLeft - EDGE_PADDING, maxOffset));
     }
 
     function updateActiveState() {
@@ -366,10 +384,14 @@
       const active = cards[index];
       if (!active) return;
 
+      syncTrackEdges(cards);
+
       cards.forEach((card, cardIndex) => {
-        const isActive = cardIndex === index;
-        card.classList.toggle('is-active', isActive);
-        card.setAttribute('aria-selected', String(isActive));
+        const dist = Math.abs(cardIndex - index);
+        card.classList.toggle('is-active', dist === 0);
+        card.classList.toggle('is-side', dist === 1);
+        card.classList.toggle('is-far', dist >= 2);
+        card.setAttribute('aria-selected', String(dist === 0));
       });
 
       getDots().forEach((dot, dotIndex) => {
@@ -381,9 +403,8 @@
       currentTitle.textContent = SERVICE_CAROUSEL[index].title;
 
       runAnime({
-        targets: [active, current, currentTitle],
+        targets: [current, currentTitle],
         opacity: [0.72, 1],
-        translateY: [10, 0],
         duration: 520,
         easing: 'easeOutExpo'
       });
@@ -391,6 +412,7 @@
 
     function moveTrack() {
       const cards = getCards();
+      syncTrackEdges(cards);
       const offset = getTargetOffset(cards);
 
       if (!window.anime || reduceMotion()) {
@@ -410,8 +432,8 @@
     function moveTo(nextIndex, fromManualAction) {
       index = (nextIndex + SERVICE_CAROUSEL.length) % SERVICE_CAROUSEL.length;
 
-      moveTrack();
       updateActiveState();
+      moveTrack();
       if (fromManualAction) restartProgress();
     }
 
@@ -490,11 +512,6 @@
       restartProgress();
     });
 
-    carousel.addEventListener('mouseenter', () => {
-      if (progressAnimation && typeof progressAnimation.pause === 'function') progressAnimation.pause();
-    });
-
-    carousel.addEventListener('mouseleave', () => restartProgress());
     window.addEventListener('resize', () => moveTrack());
 
     moveTo(0, false);
@@ -612,7 +629,7 @@
   function initInteractiveCards() {
     if (isTouch() || reduceMotion()) return;
 
-    qsa('.standard-card, .service-detail-card, .service-carousel-card, .portfolio-card, .metric-item, .company-stat, .values-grid span').forEach((card) => {
+    qsa('.standard-card, .service-detail-card, .portfolio-card, .metric-item, .company-stat, .values-grid span').forEach((card) => {
       card.addEventListener('mouseenter', () => {
         runAnime({
           targets: card,
