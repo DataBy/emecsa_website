@@ -314,17 +314,13 @@
 
     const track = qs('[data-carousel-track]', carousel);
     const viewport = qs('[data-carousel-viewport]', carousel);
-    const progress = qs('[data-carousel-progress]', carousel);
     const prev = qs('[data-carousel-prev]', carousel);
     const next = qs('[data-carousel-next]', carousel);
-    const dotsWrap = qs('[data-carousel-dots]', carousel);
-    const current = qs('[data-carousel-current]', carousel);
-    const currentTitle = qs('[data-carousel-title]', carousel);
-    if (!track || !viewport || !progress || !prev || !next || !dotsWrap || !current || !currentTitle) return;
+    if (!track || !viewport || !prev || !next) return;
 
     const autoDelay = 6200;
     let index = 0;
-    let progressAnimation = null;
+    let autoTimer = null;
     let isDragging = false;
     let dragStartX = 0;
 
@@ -336,47 +332,46 @@
           <img src="${imagePath}" alt="${item.title}" loading="lazy">
         </div>
         <div class="service-card-content">
-          <span class="service-card-number">${item.number}</span>
           <h3>${item.title}</h3>
           <p>${item.text}</p>
-          <ul>
-            ${item.bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
-          </ul>
-          <div class="service-card-meta">${item.meta}</div>
         </div>
       </article>
     `;
     }).join('');
 
-    dotsWrap.innerHTML = SERVICE_CAROUSEL.map((item, dotIndex) => `
-      <button class="carousel-dot" type="button" data-carousel-dot="${dotIndex}" aria-label="Ver servicio ${item.number}"></button>
-    `).join('');
-
     viewport.setAttribute('tabindex', '0');
 
-    const EDGE_PADDING = window.matchMedia('(max-width: 820px)').matches ? 30 : 34;
+    function getTrackPadding() {
+      if (window.matchMedia('(max-width: 820px)').matches) {
+        return { start: 24, end: 112 };
+      }
+
+      return { start: 34, end: 84 };
+    }
 
     function getCards() {
       return qsa('.service-carousel-card', track);
-    }
-
-    function getDots() {
-      return qsa('.carousel-dot', dotsWrap);
     }
 
     function syncTrackEdges(cards) {
       const active = cards[index];
       if (!active) return;
 
-      track.style.paddingLeft = `${EDGE_PADDING}px`;
-      track.style.paddingRight = `${EDGE_PADDING}px`;
+      const trackPadding = getTrackPadding();
+      track.style.paddingLeft = `${trackPadding.start}px`;
+      track.style.paddingRight = `${trackPadding.end}px`;
     }
 
     function getTargetOffset(cards) {
       const active = cards[index];
       if (!active) return 0;
-      const maxOffset = Math.max(0, track.scrollWidth - viewport.clientWidth);
-      return Math.max(0, Math.min(active.offsetLeft - EDGE_PADDING, maxOffset));
+      const last = cards[cards.length - 1];
+      const trackPadding = getTrackPadding();
+      const centeredOffset = active.offsetLeft - ((viewport.clientWidth - active.offsetWidth) / 2);
+      const maxOffset = last
+        ? Math.max(0, last.offsetLeft + last.offsetWidth + trackPadding.end - viewport.clientWidth)
+        : 0;
+      return Math.max(0, Math.min(centeredOffset, maxOffset));
     }
 
     function updateActiveState() {
@@ -392,21 +387,6 @@
         card.classList.toggle('is-side', dist === 1);
         card.classList.toggle('is-far', dist >= 2);
         card.setAttribute('aria-selected', String(dist === 0));
-      });
-
-      getDots().forEach((dot, dotIndex) => {
-        dot.classList.toggle('is-active', dotIndex === index);
-        dot.setAttribute('aria-current', dotIndex === index ? 'true' : 'false');
-      });
-
-      current.textContent = SERVICE_CAROUSEL[index].number;
-      currentTitle.textContent = SERVICE_CAROUSEL[index].title;
-
-      runAnime({
-        targets: [current, currentTitle],
-        opacity: [0.72, 1],
-        duration: 520,
-        easing: 'easeOutExpo'
       });
     }
 
@@ -434,39 +414,19 @@
 
       updateActiveState();
       moveTrack();
-      if (fromManualAction) restartProgress();
+      if (fromManualAction) restartAuto();
     }
 
-    function restartProgress() {
-      if (progressAnimation && typeof progressAnimation.pause === 'function') {
-        progressAnimation.pause();
-      }
-
-      if (!window.anime || reduceMotion()) return;
-
-      anime.remove(progress);
-      progress.style.transform = 'scaleX(0)';
-      progressAnimation = anime({
-        targets: progress,
-        scaleX: [0, 1],
-        duration: autoDelay,
-        easing: 'linear',
-        complete() {
-          moveTo(index + 1, false);
-          restartProgress();
-        }
-      });
+    function restartAuto() {
+      if (autoTimer) window.clearTimeout(autoTimer);
+      autoTimer = window.setTimeout(() => {
+        moveTo(index + 1, false);
+        restartAuto();
+      }, autoDelay);
     }
 
     prev.addEventListener('click', () => moveTo(index - 1, true));
     next.addEventListener('click', () => moveTo(index + 1, true));
-
-    getDots().forEach((dot) => {
-      dot.addEventListener('click', () => {
-        const nextIndex = Number(dot.dataset.carouselDot);
-        if (Number.isFinite(nextIndex)) moveTo(nextIndex, true);
-      });
-    });
 
     getCards().forEach((card, cardIndex) => {
       card.addEventListener('click', () => moveTo(cardIndex, true));
@@ -493,7 +453,7 @@
       isDragging = true;
       dragStartX = event.clientX;
       viewport.classList.add('is-dragging');
-      if (progressAnimation && typeof progressAnimation.pause === 'function') progressAnimation.pause();
+      if (autoTimer) window.clearTimeout(autoTimer);
     });
 
     viewport.addEventListener('pointerup', (event) => {
@@ -502,20 +462,20 @@
       viewport.classList.remove('is-dragging');
       const delta = event.clientX - dragStartX;
       if (Math.abs(delta) > 44) moveTo(index + (delta < 0 ? 1 : -1), true);
-      else restartProgress();
+      else restartAuto();
     });
 
     viewport.addEventListener('pointerleave', () => {
       if (!isDragging) return;
       isDragging = false;
       viewport.classList.remove('is-dragging');
-      restartProgress();
+      restartAuto();
     });
 
     window.addEventListener('resize', () => moveTrack());
 
     moveTo(0, false);
-    restartProgress();
+    restartAuto();
   }
 
   function initProjectMasks() {

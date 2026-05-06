@@ -856,92 +856,44 @@ nav a[aria-current="page"] {
 .service-carousel {
   --service-card-gap: 1.15rem;
   position: relative;
-  padding: clamp(1.3rem, 2.6vw, 1.9rem);
-  border: 1px solid rgba(13, 31, 60, 0.1);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 26px 70px rgba(13, 31, 60, 0.09);
-  overflow: hidden;
+  padding: 0 3.3rem;
+  overflow: visible;
   isolation: isolate;
 }
 
 .service-carousel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0, 135, 90, 0.08), transparent 36%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.76), transparent);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.service-carousel-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.15rem;
-}
-
-.service-carousel-status {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  min-width: 0;
-}
-
-.service-carousel-status span {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  color: var(--white);
-  background: var(--green);
-  border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-}
-
-.service-carousel-status strong {
-  color: var(--navy);
-  font-size: 1rem;
-  line-height: 1.25;
-}
-
-.service-carousel-kicker,
-.service-card-number {
-  color: var(--green);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.service-carousel-controls {
-  display: flex;
-  gap: 0.45rem;
+  content: none;
 }
 
 .carousel-btn {
-  width: 42px;
-  height: 42px;
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   border: 1px solid var(--gray-200);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--white);
   color: var(--navy);
-  box-shadow: 0 8px 20px rgba(13, 31, 60, 0.06);
+  box-shadow: 0 12px 30px rgba(13, 31, 60, 0.1);
+  transform: translateY(-50%);
   transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.carousel-btn--prev {
+  left: 0;
+}
+
+.carousel-btn--next {
+  right: 0;
 }
 
 .carousel-btn:hover {
   border-color: var(--green);
   color: var(--green);
-  transform: translateY(-2px);
+  transform: translateY(-50%) scale(1.04);
   box-shadow: 0 14px 30px rgba(13, 31, 60, 0.1);
 }
 
@@ -951,7 +903,7 @@ nav a[aria-current="page"] {
 }
 
 .service-carousel-viewport {
-  overflow: hidden;
+  overflow: visible;
   cursor: grab;
   touch-action: pan-y;
 }
@@ -961,6 +913,8 @@ nav a[aria-current="page"] {
 }
 
 .service-carousel-track {
+  width: 100%;
+  min-width: 100%;
   display: flex;
   gap: var(--service-card-gap);
   will-change: transform;
@@ -968,11 +922,11 @@ nav a[aria-current="page"] {
 
 .service-carousel-card {
   flex: 0 0 calc((100% - (var(--service-card-gap) * 2)) / 3);
-  min-height: 520px;
-  border-radius: 22px;
+  min-height: 430px;
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 252, 0.96));
   border: 1px solid rgba(13, 31, 60, 0.09);
-  box-shadow: 0 20px 48px rgba(13, 31, 60, 0.08);
+  box-shadow: 0 18px 42px rgba(13, 31, 60, 0.07);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -987,42 +941,34 @@ nav a[aria-current="page"] {
 
 .service-carousel-card.is-active {
   opacity: 1;
-  border-color: rgba(0, 135, 90, 0.68);
-  box-shadow:
-    0 0 0 2px rgba(0, 135, 90, 0.26) inset,
-    0 28px 58px rgba(13, 31, 60, 0.13);
+  border-color: rgba(0, 135, 90, 0.28);
+  box-shadow: 0 22px 50px rgba(13, 31, 60, 0.11);
   transform: scale(1);
   z-index: 2;
 }
 
 .service-carousel-card.is-side {
-  opacity: 0.5;
-  transform: scale(0.85);
+  opacity: 0.88;
+  transform: scale(0.96);
   z-index: 1;
 }
 
 .service-carousel-card.is-far {
-  opacity: 0.22;
-  transform: scale(0.76);
+  opacity: 0.52;
+  transform: scale(0.92);
   z-index: 0;
 }
 
 .service-carousel-card:focus-visible,
-.carousel-btn:focus-visible,
-.carousel-dot:focus-visible {
+.carousel-btn:focus-visible {
   outline: 3px solid rgba(0, 135, 90, 0.22);
   outline-offset: 3px;
-}
-
-.service-card-number {
-  display: inline-flex;
-  margin-bottom: 0.9rem;
 }
 
 .service-card-media {
   position: relative;
   width: 100%;
-  height: 240px;
+  height: 250px;
   overflow: hidden;
   background: linear-gradient(160deg, rgba(0, 135, 90, 0.08), rgba(13, 31, 60, 0.03));
 }
@@ -1046,7 +992,7 @@ nav a[aria-current="page"] {
 .service-card-content {
   min-width: 0;
   width: 100%;
-  padding: clamp(1.6rem, 2.2vw, 2rem);
+  padding: clamp(1.35rem, 2vw, 1.7rem);
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -1061,80 +1007,8 @@ nav a[aria-current="page"] {
 .service-carousel-card p {
   margin-top: 0.75rem;
   color: var(--gray-600);
-  font-size: 0.88rem;
-  line-height: 1.55;
-}
-
-.service-carousel-card ul {
-  margin: 0.9rem 0 0;
-  padding-left: 1.1rem;
-  color: var(--gray-600);
-  line-height: 1.5;
-  font-size: 0.84rem;
-}
-
-.service-card-meta {
-  margin-top: auto;
-  padding-top: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--green);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.service-card-meta::before {
-  content: '';
-  width: 26px;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--green);
-}
-
-.service-carousel-footer {
-  display: grid;
-  grid-template-columns: 1fr minmax(180px, 300px);
-  gap: 1rem;
-  align-items: center;
-  margin-top: 1.15rem;
-}
-
-.service-carousel-dots {
-  display: flex;
-  gap: 0.45rem;
-  flex-wrap: wrap;
-}
-
-.carousel-dot {
-  width: 34px;
-  height: 8px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(13, 31, 60, 0.16);
-  transition: background 0.2s ease, width 0.2s ease;
-}
-
-.carousel-dot.is-active {
-  width: 54px;
-  background: var(--green);
-}
-
-.service-carousel-progress {
-  height: 3px;
-  background: rgba(0, 135, 90, 0.12);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.service-carousel-progress span {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, var(--green), var(--green-light));
-  transform: scaleX(0);
-  transform-origin: left;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .service-detail-card,
@@ -1866,17 +1740,7 @@ footer {
   }
 
   .service-carousel {
-    padding: 1.02rem;
-  }
-
-  .service-carousel-top {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .service-carousel-controls {
-    width: 100%;
-    justify-content: flex-end;
+    padding: 0 3.25rem;
   }
 
   .service-carousel-card {
@@ -1885,15 +1749,11 @@ footer {
   }
 
   .service-card-media {
-    height: 220px;
+    height: 230px;
   }
 
   .service-card-content {
     padding: 1.5rem;
-  }
-
-  .service-carousel-footer {
-    grid-template-columns: 1fr;
   }
 
   .section-title,
@@ -2010,20 +1870,21 @@ footer {
     min-height: 390px;
   }
 
-  .service-carousel-status {
-    align-items: flex-start;
-  }
-
-  .service-carousel-status strong {
-    font-size: 0.92rem;
-  }
-
   .service-carousel-card {
     min-height: 0;
   }
 
+  .service-carousel {
+    padding: 0 2.65rem;
+  }
+
+  .carousel-btn {
+    width: 38px;
+    height: 38px;
+  }
+
   .service-card-media {
-    height: 200px;
+    height: 205px;
   }
 
   .service-card-content {
@@ -2032,10 +1893,6 @@ footer {
 
   .service-carousel-card h3 {
     font-size: 1.12rem;
-  }
-
-  .service-carousel-dots {
-    justify-content: center;
   }
 
   .services-cta {
