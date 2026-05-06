@@ -595,16 +595,24 @@ nav a[aria-current="page"] {
   background: var(--gray-100);
   box-shadow: var(--shadow-soft);
   isolation: isolate;
+  position: relative;
 }
 
-.parallax-media img,
-.page-hero-media img,
+.parallax-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .project-card img,
 .portfolio-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 
 .company-stats-section {
   min-height: 100vh;
@@ -1407,10 +1415,10 @@ nav a[aria-current="page"] {
 }
 
 .page-hero-media {
-  min-height: 550px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
+  aspect-ratio: 4 / 3;
 }
 
 .service-detail-section,
@@ -1641,7 +1649,6 @@ footer {
     min-height: auto;
   }
 
-  .page-hero-media,
   .parallax-media {
     min-height: 380px;
   }
@@ -1862,7 +1869,6 @@ footer {
     width: 100%;
   }
 
-  .page-hero-media,
   .parallax-media,
   .project-card {
     min-height: 300px;
