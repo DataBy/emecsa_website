@@ -341,35 +341,17 @@
 
     viewport.setAttribute('tabindex', '0');
 
-    function getTrackPadding() {
-      if (window.matchMedia('(max-width: 820px)').matches) {
-        return { start: 24, end: 112 };
-      }
-
-      return { start: 34, end: 84 };
-    }
-
     function getCards() {
       return qsa('.service-carousel-card', track);
-    }
-
-    function syncTrackEdges(cards) {
-      const active = cards[index];
-      if (!active) return;
-
-      const trackPadding = getTrackPadding();
-      track.style.paddingLeft = `${trackPadding.start}px`;
-      track.style.paddingRight = `${trackPadding.end}px`;
     }
 
     function getTargetOffset(cards) {
       const active = cards[index];
       if (!active) return 0;
       const last = cards[cards.length - 1];
-      const trackPadding = getTrackPadding();
       const centeredOffset = active.offsetLeft - ((viewport.clientWidth - active.offsetWidth) / 2);
       const maxOffset = last
-        ? Math.max(0, last.offsetLeft + last.offsetWidth + trackPadding.end - viewport.clientWidth)
+        ? Math.max(0, last.offsetLeft + last.offsetWidth - viewport.clientWidth)
         : 0;
       return Math.max(0, Math.min(centeredOffset, maxOffset));
     }
@@ -378,8 +360,6 @@
       const cards = qsa('.service-carousel-card', track);
       const active = cards[index];
       if (!active) return;
-
-      syncTrackEdges(cards);
 
       cards.forEach((card, cardIndex) => {
         const dist = Math.abs(cardIndex - index);
@@ -392,7 +372,6 @@
 
     function moveTrack() {
       const cards = getCards();
-      syncTrackEdges(cards);
       const offset = getTargetOffset(cards);
 
       if (!window.anime || reduceMotion()) {

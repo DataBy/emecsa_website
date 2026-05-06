@@ -854,9 +854,10 @@ nav a[aria-current="page"] {
 }
 
 .service-carousel {
-  --service-card-gap: 1.15rem;
+  --service-card-gap: 1.25rem;
   position: relative;
-  padding: 0 3.3rem;
+  padding: 1.5rem 3.5rem;
+  margin-block: -1.5rem;
   overflow: visible;
   isolation: isolate;
 }
@@ -883,11 +884,11 @@ nav a[aria-current="page"] {
 }
 
 .carousel-btn--prev {
-  left: 0;
+  left: 0.25rem;
 }
 
 .carousel-btn--next {
-  right: 0;
+  right: 0.25rem;
 }
 
 .carousel-btn:hover {
@@ -903,7 +904,8 @@ nav a[aria-current="page"] {
 }
 
 .service-carousel-viewport {
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   cursor: grab;
   touch-action: pan-y;
 }
@@ -1740,11 +1742,11 @@ footer {
   }
 
   .service-carousel {
-    padding: 0 3.25rem;
+    padding: 1.5rem 3.25rem;
   }
 
   .service-carousel-card {
-    flex-basis: calc(100% - 10px);
+    flex-basis: calc(100% - 8px);
     min-height: 0;
   }
 
@@ -1875,7 +1877,7 @@ footer {
   }
 
   .service-carousel {
-    padding: 0 2.65rem;
+    padding: 1.5rem 2.75rem;
   }
 
   .carousel-btn {
