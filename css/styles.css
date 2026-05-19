@@ -1771,8 +1771,14 @@ footer {
     overflow-y: auto;
   }
 
-  header.nav-open + nav {
+  header.nav-open nav {
     display: flex;
+  }
+
+  .header-logo,
+  .nav-toggle {
+    position: relative;
+    z-index: 1001;
   }
 
   nav a {
