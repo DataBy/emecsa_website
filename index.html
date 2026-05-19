@@ -39,14 +39,15 @@
       >
     </a>
 
-    <nav aria-label="Navegación principal">
-      <a href="#company">Empresa</a>
-      <a href="#services">Servicios</a>
-      <a href="#standards">Normas</a>
-      <a href="#projects">Proyectos</a>
-      <a href="https://wa.me/50687570522?text=Hola%20EMECSA%2C%20quisiera%20conversar%20sobre%20un%20proyecto%20electromec%C3%A1nico." class="nav-cta" target="_blank" rel="noopener">Contáctanos</a>
-    </nav>
+    <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span></span></button>
   </header>
+  <nav id="main-nav" aria-label="Navegación principal">
+    <a href="#company">Empresa</a>
+    <a href="#services">Servicios</a>
+    <a href="#standards">Normas</a>
+    <a href="#projects">Proyectos</a>
+    <a href="https://wa.me/50687570522?text=Hola%20EMECSA%2C%20quisiera%20conversar%20sobre%20un%20proyecto%20electromec%C3%A1nico." class="nav-cta" target="_blank" rel="noopener">Contáctanos</a>
+  </nav>
 
   <div id="heroSequenceWrapper">
     <section id="hero">
@@ -127,7 +128,7 @@
             </svg>
           </div>
           <h3 class="hsvc-title">Sistemas Especiales</h3>
-          <p class="hsvc-desc">CCTV, telecomunicaciones, sonido, tomacorrientes, iluminación, detección y supresión de incendios para edificios comerciales e institucionales.</p>
+          <p class="hsvc-desc">CCTV, telecomunicaciones, sonido y detección de incendios para edificaciones de alto tránsito.</p>
           <a href="servicios.html#sistemas-especiales" class="hsvc-link">
             Más información
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -179,11 +180,7 @@
             electromecánica. Hoy desarrolla proyectos en todo Costa Rica para empresas
             privadas y sector público.
           </p>
-          <div class="company-proof-row">
-            <div><span>Fundada</span><strong>19 de febrero de 2015</strong></div>
-            <div><span>Fundador</span><strong>Ing. Guillermo Schwartz Quesada</strong></div>
-            <div><span>CFIA</span><strong>CC-08813</strong></div>
-          </div>
+          <div class="company-proof-note">Fundada en 2015 por el Ing. Guillermo, nuestra empresa está registrada ante el CFIA bajo el código <mark>CC-08813</mark>.</div>
         </div>
 
         <div class="company-stats-grid" data-reveal data-company-stats>
@@ -193,8 +190,13 @@
             <div class="company-stat-bar"><span></span></div>
           </article>
           <article class="company-stat">
-            <strong><span data-counter="25">0</span><sup>+</sup></strong>
-            <span>Proyectos documentados</span>
+            <strong><span data-counter="200">0</span><sup>+</sup></strong>
+            <span>Proyectos Ejecutados</span>
+            <div class="company-stat-bar"><span></span></div>
+          </article>
+          <article class="company-stat">
+            <strong><span data-counter="57288">0</span><sup> m²</sup></strong>
+            <span>Diseño e inspección de obra</span>
             <div class="company-stat-bar"><span></span></div>
           </article>
         </div>
