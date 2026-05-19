@@ -159,7 +159,7 @@
     }
 
     if (!window.anime || reduceMotion()) {
-      qsa('#heroLogo, #heroEyebrow, #heroHeadline, #heroSub, #heroCtaRow, #heroScrollCue').forEach((el) => {
+      qsa('#heroLogo, #heroEyebrow, #heroHeadline, #heroSub, #heroCtaRow').forEach((el) => {
         el.style.opacity = '1';
         el.style.transform = 'none';
       });
@@ -179,8 +179,7 @@
       .add({ targets: '#heroEyebrow', opacity: [0, 1], translateY: [16, 0], duration: 650 }, '-=520')
       .add({ targets: '#heroHeadline', opacity: [0, 1], translateY: [28, 0], duration: 780 }, '-=520')
       .add({ targets: '#heroSub', opacity: [0, 1], translateY: [18, 0], duration: 650 }, '-=520')
-      .add({ targets: '#heroCtaRow', opacity: [0, 1], translateY: [16, 0], duration: 600 }, '-=480')
-      .add({ targets: '#heroScrollCue', opacity: [0, 1], duration: 420 }, '-=280');
+        .add({ targets: '#heroCtaRow', opacity: [0, 1], translateY: [16, 0], duration: 600 }, '-=480');
   }
 
   function revealAboveFold() {
