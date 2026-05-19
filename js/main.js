@@ -33,14 +33,14 @@
     {
       number: '03',
       title: 'Sistemas especiales',
-      text: 'CCTV, telecomunicaciones, sonido, detección de incendios, supresión de incendios, iluminación y tomacorrientes para edificaciones de alto tránsito.',
+      text: 'CCTV, telecomunicaciones, sonido y detección de incendios para edificaciones de alto tránsito.',
       bullets: ['Retail, oficinas, centros educativos y edificios públicos.', 'Coordinación con arquitectura y operación.', 'Integración ordenada de canalizaciones.'],
       meta: 'Integración técnica'
     },
     {
       number: '04',
-      title: 'Remodelaciones electromecánicas',
-      text: 'Intervenciones en baja tensión, refrigeración, aguas grises, detección, potable, aguas negras, supresión, telecomunicaciones y cajas de pago.',
+      title: 'Remodelaciones industriales, comerciales y residenciales',
+      text: 'Ejecución de remodelaciones electromecánicas orientadas a mejorar la eficiencia, continuidad operativa y desempeño técnico de cada edificación.',
       bullets: ['Supermercados, restaurantes, centros comerciales y plantas.', 'Trabajos por fases con operación activa.', 'Reemplazo total o parcial de sistemas críticos.'],
       meta: 'Operación activa'
     },
@@ -274,8 +274,10 @@
         played = true;
         observer.disconnect();
 
+        const fmt = (n) => Math.round(n).toLocaleString('en-US');
+
         if (!window.anime || reduceMotion()) {
-          counter.textContent = Math.round(target);
+          counter.textContent = fmt(target);
           return;
         }
 
@@ -285,7 +287,7 @@
           duration: 1700,
           easing: 'easeOutCubic',
           update(anim) {
-            counter.textContent = Math.round(anim.animatables[0].target.value);
+            counter.textContent = fmt(anim.animatables[0].target.value);
           }
         });
       }, { threshold: 0.35 });
@@ -590,10 +592,47 @@
     });
   }
 
+  function initNavToggle() {
+    const toggle = qs('.nav-toggle');
+    const header = qs('#header');
+    if (!toggle || !header) return;
+
+    const open = () => {
+      header.classList.add('nav-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Cerrar menú');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const close = () => {
+      header.classList.remove('nav-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menú');
+      document.body.style.overflow = '';
+    };
+
+    toggle.addEventListener('click', () => {
+      header.classList.contains('nav-open') ? close() : open();
+    });
+
+    qs('#main-nav')?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', close);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.classList.contains('nav-open')) close();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 820) close();
+    });
+  }
+
   function boot() {
     initServiceCarousel();
     initScrollProgress();
     initHeader();
+    initNavToggle();
     initCompanyMarquee();
     initReveals();
     initCounters();
