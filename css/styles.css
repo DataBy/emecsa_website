@@ -161,7 +161,7 @@ body.inner-page header {
 
 .header-logo img {
   height: auto;
-  max-height: 90px; /* más presencia sin romper la línea */
+  max-height: 67px; /* más presencia sin romper la línea */
   width: auto;
   object-fit: contain;
 }
@@ -1901,8 +1901,8 @@ footer {
   }
 
   .hero-logo-wrap {
-    width: 170px;
-    height: 92px;
+    width: 260px;
+    height: 140px;
   }
 
   .btn-primary,
